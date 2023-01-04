@@ -1,26 +1,33 @@
 const express = require("express");
 const app = express();
-const mongoose = require("mongoose")
-const dotenv = require("dotenv");
+require("./helper/init_mongodb.js")
 const eventRoute = require("./routes/eventRoute")
-
-
-dotenv.config();
+const adminRoute = require("./routes/adminRoute")
+const ProductRoute= require('./routes/ProductRoute')
+const PaymentModeRouter= require('./routes/PaymentModeRouter')
+const Mynotes=require('./routes/MynoteRouter.js')
+const Usertask=require('./routes/UserRouter.js')
+const cookieParser = require("cookie-parser");
 const cors = require("cors");
-
-
- 
-mongoose.connect(process.env.MONGO_URL)
-.then(_=> console.log("connection successful"))
-.catch(err=> console.log("database connection fail"))
+const cookieSession = require("cookie-session");
 
 
 
 
 app.use(express.json({limit: '50mb'}));
-app.use(cors()) 
+app.use(cors({
+    origin: "http://localhost:3000",
+
+    credentials: true,
+  })) 
+  app.use(cookieParser());
 app.use("/api/events", eventRoute)
-
-
-
+app.use("/api/auth/admin", adminRoute);
+app.use("/api", ProductRoute);
+app.use("/api/paymentmode/Razorpay", PaymentModeRouter);
+app.use("/api/Register/",Mynotes)
+app.use("/api/Assigned/",Usertask)
+// http://localhost:3000/api/paymentmode/Razorpay/orders
 app.listen(process.env.PORT||5000, _=> console.log("backend server is running on port: "+ process.env.PORT))
+
+
