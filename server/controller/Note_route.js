@@ -105,4 +105,35 @@ module.exports = {
       next(error);
     }
   },
+    deleteSelectednotes: async (req, res, next) => {
+        try {
+          const result = req.body;
+          console.log(result);
+          if(result){
+
+            const ids = result.map(item => item._id);
+            if(ids.length){
+
+                const note_d= await Note.deleteMany({_id:{$in:ids}});
+                if(note_d){
+                  res.status(200).send()
+                }
+            }
+            console.log(ids);
+          }
+          res.status(404).send()
+          // console.log("id result",delID)
+          // if(typeof(val) === "undefined"){
+          //   const note_d= await Note.deleteOne({_id:req.params.id});
+          //   if (!note_d) throw createErrror(404, "Product not exits");
+          //   res.status(200).json({done:"done"});
+          // }else{
+          //   const subnote_d=await Note.updateOne({_id:req.params.id},{$pull:{SubRegister:{_id:req.params.sub_id}}});
+          //   if (!subnote_d) throw createErrror(404, "Product not exits");
+          //   res.status(200).json({done:"done"});
+          // }
+        } catch (error) {
+          console.log(error)
+        }
+      },
 }
